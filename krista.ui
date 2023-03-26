@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>399</width>
+    <height>244</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Выгрузка из УРМ</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>2</x>
+      <y>14</y>
+      <width>391</width>
+      <height>208</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QLabel" name="loginLabel">
+         <property name="text">
+          <string>Логин</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="login_line_edit">
+         <property name="text">
+          <string>SYSDBA</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="passwordLabel">
+         <property name="text">
+          <string>Пароль</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="password_line_edit">
+         <property name="inputMethodHints">
+          <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
+         </property>
+         <property name="inputMask">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>masterkey</string>
+         </property>
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QLabel" name="databasePathLabel">
+         <property name="text">
+          <string>Путь до базы УРМ</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="database_path_line_edit">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="database_path_tool_button">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Каталог выгрузки</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="unload_dir_line_edit">
+         <property name="text">
+          <string>C:\</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="unload_dir_tool_button">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Дата начала выборки</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateEdit" name="date_begin_date_edit">
+         <property name="locale">
+          <locale language="Russian" country="Russia"/>
+         </property>
+         <property name="displayFormat">
+          <string>dd.MM.yyyy</string>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Дата конца выборки</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateEdit" name="date_end_date_edit">
+         <property name="displayFormat">
+          <string>dd.MM.yyyy</string>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Фильтр по лицевому счету</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="filter_line_edit">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QComboBox" name="unload_combobox">
+         <item>
+          <property name="text">
+           <string>Платёжные поручения</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Сметные назначения</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Реестр обязательств</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="unload_push_button">
+         <property name="text">
+          <string>Выгрузить</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
