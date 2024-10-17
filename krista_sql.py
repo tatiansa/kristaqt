@@ -192,17 +192,19 @@ PBS_SQL = """select
     kcsr.code as targt, 
     kvr.code as tarst 
 from budgetdata
-    join budnotify  on (budnotify.id = budgetdata.recordindex)
+    join budnotify on (budnotify.id = budgetdata.recordindex)
     join organizations notify_organizations on (budnotify.ORGREF = notify_organizations.id)
     join organizations data_organizations on (budgetdata.org_ref = data_organizations.id)
     left join kvsr on (budgetdata.kvsr = kvsr.id)
     left join kcsr on (budgetdata.kcsr = kcsr.id)
     left join kvr on (budgetdata.kvr = kvr.id)
-    left join kesr on (budgetdata.kesr = KESR.ID)
+    left join kesr on (budgetdata.kesr = kesr.id)
 where 
-    budnotify.rejectnote is null and 
-    budnotify.rejectcls is null  and 
-    budnotify.dat>='{}' and budnotify.dat<='{}'"""
+    budnotify.rejectnote is null 
+    and budnotify.rejectcls is null  
+    and budnotify.dat >= '{}' 
+    and budnotify.dat <= '{}'
+"""
 
 ARG_ACCOUNT_FILTER = ' and a.facialacc_cls={}'
 ARG_BANK_SQL = """select 
