@@ -5,41 +5,132 @@ from decimal import Decimal
 from dbfpy3 import dbf
 
 
+import json
+from decimal import Decimal
+
 class FireBirdGetterMethods:
-    """Класс для методов получения и конвертации полей из бд."""
+    """Класс для методов получения и конвертации полей из БД.
+
+    Методы этого класса предназначены для преобразования различных типов данных,
+    получаемых из базы данных FireBird, в более удобные форматы, такие как строки или числа.
+
+    Static Methods:
+        date_from_double(value): Преобразует числовое значение в строку без дробной части.
+        to_string(value): Преобразует значение в строку, возвращая пустую строку, если значение пустое.
+        number(value): Возвращает числовое значение или 0, если значение пустое.
+        number_prescision2(value): Преобразует значение в Decimal с точностью до 2 знаков.
+        number_prescision4(value): Преобразует значение в Decimal с точностью до 4 знаков.
+        string_from_float(value): Преобразует float в строку через date_from_double.
+        get_inn(value): Преобразует значение в строку ИНН с добавлением "0" при необходимости.
+        to_json(value): Преобразует объект в JSON-строку.
+    """
 
     @staticmethod
     def date_from_double(value):
+        """Преобразует числовое значение в строку без дробной части.
+
+        Args:
+            value (float): Числовое значение для преобразования.
+
+        Returns:
+            str: Строка без дробной части или пустая строка, если значение пустое.
+        """
         return f'{value:.0f}' if value else ''
 
     @staticmethod
     def to_string(value):
+        """Преобразует значение в строку.
+
+        Args:
+            value: Значение для преобразования.
+
+        Returns:
+            str: Строковое представление значения или пустая строка, если значение пустое.
+        """
         return f'{value}' if value else ''
 
     @staticmethod
     def number(value):
+        """Возвращает числовое значение или 0, если значение пустое.
+
+        Args:
+            value: Числовое значение.
+
+        Returns:
+            int or float: Возвращает числовое значение или 0, если значение пустое.
+        """
         return value if value else 0
 
     @staticmethod
     def number_prescision2(value):
+        """Преобразует значение в Decimal с точностью до 2 знаков.
+
+        Args:
+            value: Числовое значение для преобразования.
+
+        Returns:
+            Decimal: Значение с точностью до двух знаков после запятой.
+        """
         return round(Decimal(value), 2) if value else round(Decimal(0), 2)
 
     @staticmethod
     def number_prescision4(value):
+        """Преобразует значение в Decimal с точностью до 4 знаков.
+
+        Args:
+            value: Числовое значение для преобразования.
+
+        Returns:
+            Decimal: Значение с точностью до четырёх знаков после запятой.
+        """
         return round(Decimal(value), 4) if value else round(Decimal(0), 4)
 
     @staticmethod
     def string_from_float(value):
+        """Преобразует значение float в строку через метод date_from_double.
+
+        Args:
+            value (float): Числовое значение для преобразования.
+
+        Returns:
+            str: Строка без дробной части или пустая строка, если значение пустое.
+        """
         return FireBirdGetterMethods.date_from_double(value)
 
     @staticmethod
     def get_inn(value):
+        """Преобразует значение в строку ИНН с добавлением '0' при необходимости.
+
+        Если длина ИНН 9 или 11 символов, добавляется ведущий ноль.
+
+        Args:
+            value (str or int): Значение ИНН.
+
+        Returns:
+            str: Строка ИНН с добавленным нулем, если это необходимо.
+        """
         value = FireBirdGetterMethods.date_from_double(value)
         if len(value) == 9 or len(value) == 11:
-            # я не знаю зачем это нужно, аналитик тоже, но раз было в первоисточнике пусть остаётся
+            # Аналитик указал, что добавление нуля требуется, но причину не знает
             value = f'0{value}'
 
         return value
+
+    @staticmethod
+    def to_json(value):
+        """Преобразует объект в JSON-строку.
+
+        Args:
+            value (any): Объект для преобразования в JSON.
+
+        Returns:
+            str: JSON-представление объекта.
+        """
+        try:
+            return json.dumps(value)
+        except (TypeError, ValueError) as e:
+            return f'Ошибка преобразования в JSON: {str(e)}'
+
 
 
 class DbfCreatorABS(metaclass=ABCMeta):
