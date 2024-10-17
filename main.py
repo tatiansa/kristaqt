@@ -98,6 +98,15 @@ class DynamicConfigFile:
         self.date_end = None
 
     def read_item(self, item, section='krista'):
+        """Чтение значения элемента из конфигурационного файла.
+
+        Args:
+            item (str): Имя элемента для чтения.
+            section (str, optional): Имя секции в конфигурационном файле. По умолчанию 'krista'.
+
+        Returns:
+            str or None: Значение элемента, если он существует. Иначе None.
+        """
         result = None
         try:
             result = self.config[section][item]
@@ -122,6 +131,21 @@ class DynamicConfigFile:
             self.date_end = self.read_item('date_end')
 
     def write(self, login, password, unload_dir, database_path, filter, date_begin, date_end, host='127.0.0.1'):
+        """Запись конфигурационных данных в файл.
+
+        Args:
+            login (str): Логин для подключения к базе данных.
+            password (str): Пароль для подключения к базе данных.
+            unload_dir (str): Директория для выгрузки данных.
+            database_path (str): Путь к базе данных.
+            filter (str): Дополнительный фильтр для SQL-запросов.
+            date_begin (QDate): Дата начала выгрузки.
+            date_end (QDate): Дата окончания выгрузки.
+            host (str, optional): Хост для подключения к базе данных. По умолчанию '127.0.0.1'.
+
+        Returns:
+            None
+        """
         config = configparser.ConfigParser()
         config.add_section('krista')
         config[self.section_name]['host'] = host
@@ -175,10 +199,12 @@ class DatabaseConnection:
     def execute(self, sql):
         """Получение данных запроса и вывод в виде словаря.
 
-        :param sql: запрос к бд
-        :return: словарь вида название колонки: значение
-        """
+        Args:
+            sql (str): SQL-запрос для выполнения.
 
+        Returns:
+            list[dict]: Список словарей, где ключи - это названия колонок, а значения - это соответствующие данные.
+        """
         self.cursor = self.connection.cursor()
         self.cursor.execute(sql)
         columns = [col[0] for col in self.cursor.description]
@@ -574,6 +600,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_default_status()
 
     def fill_by_config(self, login, password, database_path, unload_dir, filter_, date_begin, date_end):
+        """Заполняет форму главного окна на основе данных конфигурации.
+
+        Args:
+            login (str): Логин для базы данных.
+            password (str): Пароль для базы данных.
+            database_path (str): Путь к базе данных.
+            unload_dir (str): Директория для выгрузки.
+            filter_ (str): Дополнительный фильтр.
+            date_begin (str): Дата начала в формате строки 'dd.mm.yyyy'.
+            date_end (str): Дата окончания в формате строки 'dd.mm.yyyy'.
+
+        Returns:
+            None
+        """
         self.login_line_edit.setText(login)
         self.password_line_edit.setText(password)
         self.database_path_line_edit.setText(database_path)
