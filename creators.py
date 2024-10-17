@@ -132,7 +132,6 @@ class FireBirdGetterMethods:
             return f'Ошибка преобразования в JSON: {str(e)}'
 
 
-
 class DbfCreatorABS(metaclass=ABCMeta):
     """Базовый класс для записи dbf файла."""
 
@@ -140,54 +139,67 @@ class DbfCreatorABS(metaclass=ABCMeta):
     dbf_schema_and_getter_map = {}
 
     def additional_handler(self, dbf_record, firebird_record):
+        """Метод для дополнительной обработки записей, может быть переопределен в наследуемых классах."""
         pass
 
-    def force_encode(self, value):
-        """Представляем строки в виде bytes
+    @staticmethod
+    def force_encode(value):
+        """Представляем строки в виде bytes, если это строка.
 
-        :param value: значение
-        :return: bytes
+        Args:
+            value: Значение для преобразования.
+
+        Returns:
+            bytes or original value: Преобразованное в bytes значение или оригинал, если не строка.
         """
-
-        result = value
-        if isinstance(value, (str, )):
-            result = value.encode()
-
-        return result
+        return value.encode() if isinstance(value, str) else value
 
     def fkr_handler(self, dbf_record, firebird_record):
-        """Заполенение и чтение fkr
+        """Заполнение и чтение полей fkr.
 
-        :param dbf_record: запись для dbf
-        :param firebird_record: запись из бд
-        :return: список кодов
+        Args:
+            dbf_record: Запись для dbf.
+            firebird_record: Запись из базы данных.
+
+        Returns:
+            tuple: Список кодов, связанных с fkr.
         """
-
         grbs = FireBirdGetterMethods.to_string(firebird_record['GRBS']).ljust(3, '0')
         divsn = FireBirdGetterMethods.to_string(firebird_record['DIVSN']).ljust(4, '0')
         targt = FireBirdGetterMethods.to_string(firebird_record['TARGT']).ljust(7, '0')
         tarst = FireBirdGetterMethods.to_string(firebird_record['TARST']).ljust(3, '0')
-        fkrid = f'{grbs}.{divsn}.{targt}.{tarst}'
-
-        return fkrid, grbs, divsn, targt, tarst
+        return f'{grbs}.{divsn}.{targt}.{tarst}', grbs, divsn, targt, tarst
 
     def create(self, db_records, unload_dir, create_new_file=True):
-        with dbf.Dbf(unload_dir + os.sep + self.file_name, new=create_new_file, code_page='cp866') as dbf_db:
+        """Создание и запись dbf-файла на основе записей из базы данных.
+
+        Args:
+            db_records: Список записей из базы данных.
+            unload_dir: Директория для выгрузки файла.
+            create_new_file (bool): Флаг, нужно ли создавать новый файл.
+
+        Returns:
+            None
+        """
+        file_path = os.path.join(unload_dir, self.file_name)
+        with dbf.Dbf(file_path, new=create_new_file, code_page='cp866') as dbf_db:
             if create_new_file:
                 dbf_db.add_field(*self.dbf_schema_and_getter_map.keys())
 
-            for firebird_db_record in db_records:
-                dbf_db_record = dbf_db.new()
+            for firebird_record in db_records:
+                dbf_record = dbf_db.new()
                 for key, getter in self.dbf_schema_and_getter_map.items():
-                    _, column, _ = key
+                    _, column, _ = key  # Извлекаем имя столбца
                     if isinstance(getter, (tuple, list)):
-                        getter, fire_bird_column = getter
-                        dbf_db_record[column.upper()] = self.force_encode(getter(firebird_db_record[fire_bird_column]))
-                    elif getter and callable(getter):
-                        dbf_db_record[column.upper()] = self.force_encode(getter(firebird_db_record[column]))
+                        getter, firebird_column = getter
+                        value = getter(firebird_record[firebird_column])
+                    else:
+                        value = getter(firebird_record[column]) if callable(getter) else firebird_record[column]
 
-                self.additional_handler(dbf_db_record, firebird_db_record)
-                dbf_db.write(dbf_db_record)
+                    dbf_record[column.upper()] = self.force_encode(value)
+
+                self.additional_handler(dbf_record, firebird_record)
+                dbf_db.write(dbf_record)
 
 
 class PlpMainCreator(DbfCreatorABS):
